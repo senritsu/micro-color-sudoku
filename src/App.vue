@@ -5,6 +5,7 @@
     v-bind="state.context"
     @set="send({type: 'SET', payload: $event})"
     @gameover="send('GAMEOVER')"
+    @back="send('BACK')"
   />
 </template>
 

@@ -1,4 +1,5 @@
 <template>
+  <button :class="$style.button" @click="$emit('back')">🔙</button>
   <div :class="$style.grid">
 
     <!-- cells -->
@@ -51,6 +52,7 @@ export default defineComponent({
     cells: { type: Array, required: true },
     fixedCells: { type: Array, required: true }
   },
+  emits: ['set', 'gameover', 'back'],
   setup (props) {
     
   },
@@ -141,6 +143,10 @@ export default defineComponent({
 </script>
 
 <style module>
+.button {
+  font-size: 3em;
+}
+
 .grid {
   font-size: 10vw;
   margin-top: 10vw;
