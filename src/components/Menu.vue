@@ -1,13 +1,19 @@
 <template>
-  <h1>Micro Color Sudoku</h1>
-  <button @click="$emit('start', 4)">🔰</button>
-  <button @click="$emit('start', 9)">💠</button>
+  <h3 :class="$style.subheader">Micro</h3>
+  <h1 :class="$style.header">Color Sudoku</h1>
+  <Button @click="$emit('start', 4)">🔰</Button>
+  <Button @click="$emit('start', 9)">💠</Button>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 
+import Button from './Button.vue'
+
 export default defineComponent({
+  components: {
+    Button
+  },
   emits: ['start'],
   setup () {
     
@@ -15,10 +21,13 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-button {
-  font-size: 2em;
-  padding: 0.5em;
-  margin: 1em;
+<style module>
+.subheader {
+  margin: 0;
+  opacity: 0.25;
+}
+.header {
+  margin-top: 0;
+  font-size: 2.5em;
 }
 </style>

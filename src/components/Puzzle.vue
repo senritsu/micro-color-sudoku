@@ -1,5 +1,4 @@
 <template>
-  <button :class="$style.button" @click="$emit('back')">↩</button>
   <div :class="$style.grid">
 
     <!-- cells -->
@@ -41,12 +40,18 @@
       />
     </template>
   </div>
+  <Button @click="$emit('back')">↩</Button>
 </template>
 
 <script>
 import { defineComponent, ref } from 'vue'
 
+import Button from './Button.vue'
+
 export default defineComponent({
+  components: {
+    Button
+  },
   props: {
     size: { type: Number, required: true },
     cells: { type: Array, required: true },
@@ -143,10 +148,6 @@ export default defineComponent({
 </script>
 
 <style module>
-.button {
-  font-size: 3em;
-}
-
 .grid {
   font-size: 10vw;
   margin-top: 10vw;

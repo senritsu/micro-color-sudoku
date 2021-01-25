@@ -1,16 +1,18 @@
 <template>
   <h1 :class="$style.crown">👑</h1>
-  <button :class="$style.button" @click="$emit('back')">↩</button>
+  <Button @click="$emit('back')">↩</Button>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 
+import Button from './Button.vue'
+
 export default defineComponent({
-  emits: ['start'],
-  setup () {
-    
-  }
+  components: {
+    Button
+  },
+  emits: ['back']
 })
 </script>
 
@@ -20,9 +22,6 @@ export default defineComponent({
   margin: 0.5em;
   animation: pulse 1.5s linear infinite;
 }
-.button {
-  font-size: 3em;
-}
 
 @keyframes pulse {
   0% {
@@ -31,10 +30,7 @@ export default defineComponent({
   5% {
     transform: scale(1.2);
   }
-  15% {
-    transform: scale(1.1);
-  }
-  90% {
+  100% {
     transform: scale(1);
   }
 }
