@@ -1,7 +1,7 @@
 <template>
   <h1>Micro Color Sudoku</h1>
-  <button @click="$emit('start', 4)">Start (4)</button>
-  <button @click="$emit('start', 9)">Start (9)</button>
+  <button @click="$emit('start', 4)">🔰</button>
+  <button @click="$emit('start', 9)">💠</button>
 </template>
 
 <script>

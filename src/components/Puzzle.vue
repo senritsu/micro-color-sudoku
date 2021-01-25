@@ -1,5 +1,5 @@
 <template>
-  <button :class="$style.button" @click="$emit('back')">🔙</button>
+  <button :class="$style.button" @click="$emit('back')">↩</button>
   <div :class="$style.grid">
 
     <!-- cells -->

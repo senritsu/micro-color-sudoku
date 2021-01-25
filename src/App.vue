@@ -7,6 +7,7 @@
     @gameover="send('GAMEOVER')"
     @back="send('BACK')"
   />
+  <Result v-if="state.matches('result')" />
 </template>
 
 <script lang="ts">
@@ -16,6 +17,7 @@ import { Machine, assign } from 'xstate';
 import { defineComponent } from 'vue'
 import Menu from './components/Menu.vue'
 import Puzzle from './components/Puzzle.vue'
+import Result from './components/Result.vue'
 
 interface SudokuContext {
   size: number,
@@ -43,7 +45,7 @@ const gameMachine = Machine<SudokuContext>({
     puzzle: {
       on: {
         BACK: 'menu',
-        GAMEOVER: 'menu',
+        GAMEOVER: 'result',
         SET: {
           actions: 'setCell'
         }
@@ -94,7 +96,8 @@ export default defineComponent({
   name: 'App',
   components: {
     Menu,
-    Puzzle
+    Puzzle,
+    Result
   },
   setup () {
     const { state, send } = useMachine(gameMachine)
