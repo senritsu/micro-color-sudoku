@@ -7,7 +7,10 @@
     @gameover="send('GAMEOVER')"
     @back="send('BACK')"
   />
-  <Result v-if="state.matches('result')" />
+  <Result 
+    v-if="state.matches('result')"
+    @back="send('BACK')"
+  />
 </template>
 
 <script lang="ts">
