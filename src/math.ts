@@ -1,6 +1,6 @@
 /**
  * Rotates a matrix to the left
- * @param original Square matrix, stores as flat array in row-major order
+ * @param original Square matrix, stored as a flat array in row-major order
  * @param steps How many multiples of 90 degrees to rotate
  */
 export function rotateLeft(original: number[], steps: number = 1) {
@@ -42,7 +42,7 @@ export function rotateLeft(original: number[], steps: number = 1) {
 
 /**
  * Rotates a matrix to the right
- * @param original Square matrix, stores as flat array in row-major order
+ * @param original Square matrix, stored as a flat array in row-major order
  * @param steps How many multiples of 90 degrees to rotate
  */
 export function rotateRight(original: number[], steps: number = 1) {
