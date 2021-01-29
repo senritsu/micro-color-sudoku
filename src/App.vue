@@ -16,8 +16,11 @@
 <script lang="ts">
 import { useMachine } from '@xstate/vue';
 import { Machine, assign } from 'xstate';
-
 import { defineComponent } from 'vue'
+
+import randomize from './randomize'
+import puzzles from './puzzles'
+
 import Menu from './components/Menu.vue'
 import Puzzle from './components/Puzzle.vue'
 import Result from './components/Result.vue'
@@ -67,12 +70,10 @@ const gameMachine = Machine<SudokuContext>({
     }),
     createPuzzle: assign({
       cells: (context, event) => {
-        const cells = new Array(context.size * context.size).fill(0)
+        const options = puzzles[context.size]
+        const puzzle = options[Math.floor(Math.random() * options.length)]
 
-        cells[1] = Math.floor(Math.random() * context.size + 1)
-        cells[11] = Math.floor(Math.random() * context.size + 1)
-
-        return cells;
+        return randomize(puzzle)
       }
     }),
     setFixedCells: assign({
