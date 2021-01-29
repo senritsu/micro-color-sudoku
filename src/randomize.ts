@@ -7,7 +7,7 @@ export default function (puzzle : number[]) {
     return map
   }, {} as { [key: number]: number })
 
-  const randomized = puzzle.map(n => mapping[n])
+  const randomized = puzzle.map(n => mapping[n] || 0)
 
   const steps = Math.floor(Math.random() * 4)
   return rotateLeft(randomized, steps)
