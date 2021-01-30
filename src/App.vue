@@ -88,7 +88,14 @@ const gameMachine = Machine<SudokuContext>({
       cells: (context, event) => {
         const cells = [...context.cells]
 
-        cells[event.payload.index] = event.payload.value
+        const { index, value } = event.payload
+
+        // toggle functionality, in addition to simply setting a value
+        if (value === cells[index]) {
+          cells[index] = 0
+        } else {
+          cells[index] = value
+        }
 
         return cells;
       }

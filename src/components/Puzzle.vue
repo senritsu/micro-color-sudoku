@@ -1,46 +1,52 @@
 <template>
-  <div :class="$style.grid">
-
-    <!-- cells -->
-    <Cell
-      v-for="(cell, i) in cells" :key="`cell-${i}`" 
-      :value="cell" :fixed="fixedCells.includes(i)" 
-      :style="{ gridArea: `${Math.floor(i / size) + 1} / ${i % size + 1} / span 1 / span 1` }"
-      @click="onClick(i)"
-    />
-
-    <template v-for="i in size" :key="`overlay-${i}`">
-      <!-- row overlays -->
-      <div
-        :class="{[$style.group]: true, [$style.error]: rowStatus[i - 1] === 'error'}"
-        :style="{
-          gridRow: `${i} / span 1`,
-          gridColumn: `1 / ${this.size + 1}`
-        }"
-      />
-      <!-- column overlays -->
-      <div
-        :class="{[$style.group]: true, [$style.error]: columnStatus[i - 1] === 'error'}"
-        :style="{
-          gridRow: `1 / ${this.size + 1}`,
-          gridColumn: `${i} / span 1`
-        }"
-      />
-    </template>
-
-    <template v-for="i in blockSize">
-      <!-- block overlays -->
-      <div
-        v-for="j in blockSize" :key="`group-${i}-${j}`"
-        :class="{[$style.group]: true, [$style.error]: blockStatus[(i - 1) + this.blockSize * (j - 1)] === 'error'}"
-        :style="{
-          gridRow: `${1 + (j - 1) * blockSize} / span ${blockSize}`,
-          gridColumn: `${1 + (i - 1) * blockSize} / span ${blockSize}`
-        }"
-      />
-    </template>
-  </div>
   <Button @click="$emit('back')">↩</Button>
+  <div :class="$style.container">
+    <div :class="$style.grid">
+
+      <!-- cells -->
+      <Cell
+        v-for="(cell, i) in cells" :key="`cell-${i}`" 
+        :value="cell" :fixed="fixedCells.includes(i)" 
+        :style="{ gridArea: `${Math.floor(i / size) + 1} / ${i % size + 1} / span 1 / span 1` }"
+        @click="onClick(i)"
+      />
+
+      <template v-for="i in size" :key="`overlay-${i}`">
+        <!-- row overlays -->
+        <div
+          :class="{[$style.group]: true, [$style.error]: rowStatus[i - 1] === 'error'}"
+          :style="{
+            gridRow: `${i} / span 1`,
+            gridColumn: `1 / ${this.size + 1}`
+          }"
+        />
+        <!-- column overlays -->
+        <div
+          :class="{[$style.group]: true, [$style.error]: columnStatus[i - 1] === 'error'}"
+          :style="{
+            gridRow: `1 / ${this.size + 1}`,
+            gridColumn: `${i} / span 1`
+          }"
+        />
+      </template>
+
+      <template v-for="i in blockSize">
+        <!-- block overlays -->
+        <div
+          v-for="j in blockSize" :key="`group-${i}-${j}`"
+          :class="{[$style.group]: true, [$style.error]: blockStatus[(i - 1) + this.blockSize * (j - 1)] === 'error'}"
+          :style="{
+            gridRow: `${1 + (j - 1) * blockSize} / span ${blockSize}`,
+            gridColumn: `${1 + (i - 1) * blockSize} / span ${blockSize}`
+          }"
+        />
+      </template>
+    </div>
+    <ColorSelection
+      v-model="color"
+      :size="size"
+    />
+  </div>
 </template>
 
 <script>
@@ -48,11 +54,13 @@ import { defineComponent, ref } from 'vue'
 
 import Button from './Button.vue'
 import Cell from './Cell.vue'
+import ColorSelection from './ColorSelection.vue'
 
 export default defineComponent({
   components: {
     Button,
-    Cell
+    Cell,
+    ColorSelection
   },
   props: {
     size: { type: Number, required: true },
@@ -60,8 +68,10 @@ export default defineComponent({
     fixedCells: { type: Array, required: true }
   },
   emits: ['set', 'gameover', 'back'],
-  setup (props) {
-    
+  data () {
+    return {
+      color: null
+    }
   },
   computed: {
     blockSize () { return Math.sqrt(this.size) },
@@ -128,13 +138,24 @@ export default defineComponent({
     onClick (i) {
       if (this.fixedCells.includes(i)) return
 
+      if (this.color === null) {
+        // cycle colors
       this.$emit('set', {index: i, value: (this.cells[i] + 1) % (this.size + 1)})
+      } else {
+        // set/toggle selected color
+        this.$emit('set', {index: i, value: this.color })
+      }
     }
   }
 })
 </script>
 
 <style module>
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
 .grid {
   font-size: 10vw;
   margin-top: 10vw;
