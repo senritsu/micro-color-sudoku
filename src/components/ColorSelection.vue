@@ -45,7 +45,7 @@ export default defineComponent({
   },
   methods: {
     onClick (color) {
-      this.$emit('update:modelValue', this.modelValue === color ? null : color)
+      this.$emit('update:modelValue', color)
     }
   }
 })
