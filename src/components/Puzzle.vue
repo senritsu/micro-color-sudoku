@@ -2,12 +2,12 @@
   <div :class="$style.grid">
 
     <!-- cells -->
-    <div
+    <Cell
       v-for="(cell, i) in cells" :key="`cell-${i}`" 
-      :class="{[$style.cell]: true, [$style.fixed]: fixedCells.includes(i)}" 
-      :style="{ gridArea: `${Math.floor(i / size) + 1} / ${i % size + 1} / span 1 / span 1`, backgroundColor: colors[cell] }"
+      :value="cell" :fixed="fixedCells.includes(i)" 
+      :style="{ gridArea: `${Math.floor(i / size) + 1} / ${i % size + 1} / span 1 / span 1` }"
       @click="onClick(i)"
-    /><!-- >{{ i }}</div> -->
+    />
 
     <template v-for="i in size" :key="`overlay-${i}`">
       <!-- row overlays -->
@@ -47,10 +47,12 @@
 import { defineComponent, ref } from 'vue'
 
 import Button from './Button.vue'
+import Cell from './Cell.vue'
 
 export default defineComponent({
   components: {
-    Button
+    Button,
+    Cell
   },
   props: {
     size: { type: Number, required: true },
@@ -63,21 +65,6 @@ export default defineComponent({
   },
   computed: {
     blockSize () { return Math.sqrt(this.size) },
-    colors () {
-      return [
-        '#EDEAE0',
-        '#C41E3A',
-        '#50C878',
-        '#26619C',
-        '#FFD300',
-        // 9x9 grid
-        '#9966CC',
-        '#FF7A00',
-        '#87CEFA',
-        '#F400A1',
-        '#2D383A'
-      ]
-    },
     rows () {
       return this.forSize(i => this.cells.slice(this.size * i, this.size * i + this.size))
     },
@@ -172,16 +159,6 @@ export default defineComponent({
     width: 40vh;
     height: 40vh;
   }
-}
-
-.cell {
-  width: 100%;
-  height: 100%;
-}
-
-.cell.fixed {
-  border: 0.1em dashed black;
-  box-sizing: border-box;
 }
 
 .group {
