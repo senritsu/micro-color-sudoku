@@ -70,7 +70,7 @@ export default defineComponent({
   emits: ['set', 'gameover', 'back'],
   data () {
     return {
-      color: null
+      color: 1
     }
   },
   computed: {
@@ -138,13 +138,8 @@ export default defineComponent({
     onClick (i) {
       if (this.fixedCells.includes(i)) return
 
-      if (this.color === null) {
-        // cycle colors
-      this.$emit('set', {index: i, value: (this.cells[i] + 1) % (this.size + 1)})
-      } else {
-        // set/toggle selected color
-        this.$emit('set', {index: i, value: this.color })
-      }
+      // set/toggle selected color
+      this.$emit('set', {index: i, value: this.color })
     }
   }
 })

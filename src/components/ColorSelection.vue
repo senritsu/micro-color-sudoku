@@ -4,17 +4,10 @@
     :style="{ gridTemplate }"
   >
     <div
-      :class="{[$style.color]: true, [$style.active]: modelValue === null }"
-      @click="onClick(null)"
-    >
-      🔁
-    </div>
-
-    <div
       v-for="(color, i) in colors" :key="color"
-      :class="{[$style.color]: true, [$style.active]: modelValue === i }"
+      :class="{[$style.color]: true, [$style.active]: modelValue === (i + 1)}"
       :style="{ backgroundColor: colors[i] }"
-      @click="onClick(i)"
+      @click="onClick(i + 1)"
     />
   </div>
 </template>
@@ -37,10 +30,10 @@ export default defineComponent({
   },
   computed: {
     gridTemplate () {
-      return `auto / repeat(${this.size + 2}, 1fr)`
+      return `auto / repeat(${this.size}, 1fr)`
     },
     colors () {
-      return colors.slice(0, this.size + 1)
+      return colors.slice(1, this.size + 1)
     }
   },
   methods: {
@@ -57,7 +50,6 @@ export default defineComponent({
 }
 
 .color {
-  font-size: 1em;
   height: 2.5em;
   display: flex;
   align-items: center;
