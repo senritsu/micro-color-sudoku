@@ -125,15 +125,15 @@ export default defineComponent({
     isFilled (group) {
       return group.every(x => x)
     },
-    isCorrect (group) {
-      return group.every((x, i, arr) => x && (arr.indexOf(x) === i))
+    hasError (group) {
+      return group.some((x, i, arr) => x && (arr.indexOf(x) !== i))
     },
     getStatus (group) {
-      return this.isCorrect(group) 
-        ? this.isFilled(group)
+      return this.hasError(group) 
+        ? 'error'
+        : this.isFilled(group)
           ? 'correct'
-          : 'incomplete' 
-        : 'error'
+          : 'incomplete'
     },
     onClick (i) {
       if (this.fixedCells.includes(i)) return
