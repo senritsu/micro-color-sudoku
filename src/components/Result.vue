@@ -1,6 +1,6 @@
 <template>
-  <h1 :class="$style.crown">👑</h1>
   <Button @click="$emit('back')">↩</Button>
+  <h1 :class="$style.crown">👑</h1>
 </template>
 
 <script>
