@@ -56,9 +56,17 @@ export default defineComponent({
   justify-content: center;
   user-select: none;
   cursor: pointer;
+  border-color: white;
+
+  transition: border-color 0.2s;
+}
+
+.color:hover {
+  border-bottom: 0.2em solid rgb(192, 192, 192);
 }
 
 .color.active {
   border-bottom: 0.2em solid black;
 }
+
 </style>

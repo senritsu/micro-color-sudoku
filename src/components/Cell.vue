@@ -5,7 +5,7 @@
   />
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue'
 
 import colors from '../colors'
@@ -21,7 +21,7 @@ export default defineComponent({
     }
   },
   computed: {
-    backgroundColor () {
+    backgroundColor () : string {
       return colors[this.value]
     }
   }
@@ -32,10 +32,11 @@ export default defineComponent({
 .cell {
   width: 100%;
   height: 100%;
+  cursor: pointer;
 }
 
 .cell.fixed {
-  border: 0.1em dashed black;
+  border: 0.075em dashed black;
   box-sizing: border-box;
 }
 </style>

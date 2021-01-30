@@ -2,6 +2,13 @@
   <Button @click="onBackClick">↩</Button>
   <div :class="$style.container">
     <div :class="$style.grid">
+      <div 
+        v-for="(n, i) in size" :key="`block-underlay-${i}`"
+        :class="[$style.group, $style.blockUnderlay]"
+        :style="placement.block(i)"
+      >
+
+      </div>
 
       <!-- cells -->
       <Cell
@@ -26,16 +33,16 @@
         >
           <div :class="{ [$style.errorOverlay]: true, [$style.error]: validation.columns[i] === 'error' }" />
         </div>
+        <!-- block overlays -->
+        <div
+          :class="{ [$style.group]: true, [$style.block]: true }"
+          :style="placement.block(i)"
+        >
+          <div :class="{ [$style.errorOverlay]: true, [$style.error]: validation.blocks[i] === 'error' }" />
+        </div>
       </template>
 
-      <!-- block overlays -->
-      <div
-        v-for="(n, i) in size" :key="`group-${i}`"
-        :class="{ [$style.group]: true, [$style.block]: true }"
-        :style="placement.block(i)"
-      >
-        <div :class="{ [$style.errorOverlay]: true, [$style.error]: validation.blocks[i] === 'error' }" />
-      </div>
+      
     </div>
     <ColorSelection
       v-model="color"
@@ -181,18 +188,19 @@ export default defineComponent({
 <style module>
 .container {
   display: flex;
+  margin-top: 10vw;
   flex-direction: column;
+  box-shadow: 0.05em 0.1em 0.3em 0.1em #d1d1d1;
 }
 
 .grid {
   font-size: 10vw;
-  margin-top: 10vw;
 
   width: 80vw;
   height: 80vw;
 
   display: grid;
-  border: 0.2em solid rgb(0, 0, 0);
+  border: 0.2em solid white;
   /* background-color: rgb(238, 232, 230); */
   gap: 0.2em;
   padding: 0.2em;
@@ -201,9 +209,12 @@ export default defineComponent({
 }
 
 @media (orientation: landscape) {
+  .container {
+    margin-top: 10vh;
+  }
+
   .grid {
     font-size: 5vh;
-    margin-top: 10vh;
 
     width: 40vh;
     height: 40vh;
@@ -213,13 +224,14 @@ export default defineComponent({
 .group {
   align-self: stretch;
   justify-self: stretch;
-  margin: -0.1em;
-  padding: 0.3em;
+  padding: 0.2em;
   pointer-events: none;
 }
 
-.group.block {
-  border: 1px solid rgb(199, 199, 199);
+.blockUnderlay {
+  margin: -0.15em;
+  border: 0.1em solid rgb(211, 210, 210);
+  /* background-color: #6d6d6d; */
 }
 
 .group > .errorOverlay {
