@@ -7,46 +7,35 @@
       <Cell
         v-for="(cell, i) in cells" :key="`cell-${i}`" 
         :value="cell" :fixed="fixedCells.includes(i)" 
-        :style="{ gridArea: `${Math.floor(i / size) + 1} / ${i % size + 1} / span 1 / span 1` }"
+        :style="placement.cell(i)"
         @click="onCellClick(i)"
       />
 
-      <template v-for="i in size" :key="`overlay-${i}`">
+      <template v-for="(n, i) in size" :key="`overlay-${i}`">
         <!-- row overlays -->
         <div
           :class="$style.group"
-          :style="{
-            gridRow: `${i} / span 1`,
-            gridColumn: `1 / ${size + 1}`
-          }"
+          :style="placement.row(i)"
         >
-          <div :class="{ [$style.errorOverlay]: true, [$style.error]: validation.rows[i - 1] === 'error'}" />
+          <div :class="{ [$style.errorOverlay]: true, [$style.error]: validation.rows[i] === 'error'}" />
         </div>
         <!-- column overlays -->
         <div
           :class="$style.group"
-          :style="{
-            gridRow: `1 / ${size + 1}`,
-            gridColumn: `${i} / span 1`
-          }"
+          :style="placement.column(i)"
         >
-          <div :class="{ [$style.errorOverlay]: true, [$style.error]: validation.columns[i - 1] === 'error' }" />
+          <div :class="{ [$style.errorOverlay]: true, [$style.error]: validation.columns[i] === 'error' }" />
         </div>
       </template>
 
-      <template v-for="i in blockSize">
-        <!-- block overlays -->
-        <div
-          v-for="j in blockSize" :key="`group-${i}-${j}`"
-          :class="{ [$style.group]: true, [$style.block]: true }"
-          :style="{
-            gridRow: `${1 + (j - 1) * blockSize} / span ${blockSize}`,
-            gridColumn: `${1 + (i - 1) * blockSize} / span ${blockSize}`
-          }"
-        >
-          <div :class="{ [$style.errorOverlay]: true, [$style.error]: validation.blocks[(i - 1) + blockSize * (j - 1)] === 'error' }" />
-        </div>
-      </template>
+      <!-- block overlays -->
+      <div
+        v-for="(n, i) in size" :key="`group-${i}`"
+        :class="{ [$style.group]: true, [$style.block]: true }"
+        :style="placement.block(i)"
+      >
+        <div :class="{ [$style.errorOverlay]: true, [$style.error]: validation.blocks[i] === 'error' }" />
+      </div>
     </div>
     <ColorSelection
       v-model="color"
@@ -156,13 +145,32 @@ export default defineComponent({
       emit('back')
     }
 
+    const placement = {
+      cell: (index : number) => ({
+        gridRow: `${Math.floor(index / props.size) + 1} / span 1`,
+        gridColumn: `${index % props.size + 1} / span 1`
+      }),
+      row: (index : number) => ({
+        gridRow: `${index + 1} / span 1`,
+        gridColumn: `1 / ${props.size + 1}`
+      }),
+      column: (index : number) => ({
+        gridRow: `1 / ${props.size + 1}`,
+        gridColumn: `${index + 1} / span 1`
+      }),
+      block: (index : number) => ({
+        gridRow: `${1 + Math.floor(index / blockSize.value) * blockSize.value} / span ${blockSize.value}`,
+        gridColumn: `${1 + (index % blockSize.value) * blockSize.value} / span ${blockSize.value}`
+      })
+    }
+
     return {
       color,
-      blockSize,
       rows,
       columns,
       blocks,
       validation,
+      placement,
       onCellClick,
       onBackClick
     }
