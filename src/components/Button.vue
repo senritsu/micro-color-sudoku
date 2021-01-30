@@ -1,5 +1,7 @@
 <template>
-  <button :class="$style.button"><slot /></button>
+  <button :class="$style.button">
+    <slot />
+  </button>
 </template>
 
 <script>
