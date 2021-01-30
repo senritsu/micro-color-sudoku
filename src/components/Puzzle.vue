@@ -129,11 +129,11 @@ export default defineComponent({
       return group.every((x, i, arr) => x && (arr.indexOf(x) === i))
     },
     getStatus (group) {
-      return this.isFilled(group)
-        ? this.isCorrect(group) 
-          ? 'correct' 
-          : 'error' 
-        : 'incomplete'
+      return this.isCorrect(group) 
+        ? this.isFilled(group)
+          ? 'correct'
+          : 'incomplete' 
+        : 'error'
     },
     onClick (i) {
       if (this.fixedCells.includes(i)) return
