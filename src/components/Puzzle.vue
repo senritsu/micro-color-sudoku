@@ -14,32 +14,38 @@
       <template v-for="i in size" :key="`overlay-${i}`">
         <!-- row overlays -->
         <div
-          :class="{[$style.group]: true, [$style.error]: validation.rows[i - 1] === 'error'}"
+          :class="$style.group"
           :style="{
             gridRow: `${i} / span 1`,
             gridColumn: `1 / ${size + 1}`
           }"
-        />
+        >
+          <div :class="{ [$style.errorOverlay]: true, [$style.error]: validation.rows[i - 1] === 'error'}" />
+        </div>
         <!-- column overlays -->
         <div
-          :class="{[$style.group]: true, [$style.error]: validation.columns[i - 1] === 'error'}"
+          :class="$style.group"
           :style="{
             gridRow: `1 / ${size + 1}`,
             gridColumn: `${i} / span 1`
           }"
-        />
+        >
+          <div :class="{ [$style.errorOverlay]: true, [$style.error]: validation.columns[i - 1] === 'error' }" />
+        </div>
       </template>
 
       <template v-for="i in blockSize">
         <!-- block overlays -->
         <div
           v-for="j in blockSize" :key="`group-${i}-${j}`"
-          :class="{[$style.group]: true, [$style.error]: validation.blocks[(i - 1) + blockSize * (j - 1)] === 'error'}"
+          :class="{ [$style.group]: true, [$style.block]: true }"
           :style="{
             gridRow: `${1 + (j - 1) * blockSize} / span ${blockSize}`,
             gridColumn: `${1 + (i - 1) * blockSize} / span ${blockSize}`
           }"
-        />
+        >
+          <div :class="{ [$style.errorOverlay]: true, [$style.error]: validation.blocks[(i - 1) + blockSize * (j - 1)] === 'error' }" />
+        </div>
       </template>
     </div>
     <ColorSelection
@@ -50,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, PropType } from 'vue'
+import { defineComponent, ref, toRef, computed, watch, PropType } from 'vue'
 
 import Button from './Button.vue'
 import Cell from './Cell.vue'
@@ -199,16 +205,24 @@ export default defineComponent({
 .group {
   align-self: stretch;
   justify-self: stretch;
-  background-color: transparent;
-  opacity: 0.1;
-  /* margin: -0.1em; */
-  margin: 0.2em;
+  margin: -0.1em;
+  padding: 0.3em;
   pointer-events: none;
+}
+
+.group.block {
+  border: 1px solid rgb(199, 199, 199);
+}
+
+.group > .errorOverlay {
+  width: 100%;
+  height: 100%;
+  opacity: 0.1;
 
   transition: background-color 0.3s;
 }
 
-.group.error {
+.group > .errorOverlay.error {
   background-color: red;
   animation: blink 1s infinite;
 }
