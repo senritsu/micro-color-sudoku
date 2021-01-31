@@ -58,6 +58,9 @@ import Button from './Button.vue'
 import Cell from './Cell.vue'
 import ColorSelection from './ColorSelection.vue'
 
+import { useSquareLayout } from '../composition/layout'
+import { useValidation } from '../composition/validation'
+
 export default defineComponent({
   components: {
     Button,
@@ -73,70 +76,11 @@ export default defineComponent({
   setup (props, { emit }) {
     const color = ref(1)
 
-    const blockSize = computed(() => Math.sqrt(props.size))
+    const { groups, placement } = useSquareLayout(toRef(props, 'cells'))
 
-    function forSize<T>(f: (index: number) => T) {
-      return Array.from({length: props.size}).map((_, i) => f(i))
-    } 
-    
-    const rows = computed(() => {
-      return forSize(i => props.cells.slice(props.size * i, props.size * i + props.size))
-    })
-    const columns = computed(() => {
-      return forSize(i => rows.value.map(row => row[i]))
-    })
-    const blocks = computed(() => {
-      return forSize(i => forSize(j => {
-        const N = props.size
-        const K = blockSize.value
+    const { validation } = useValidation(groups)
 
-        return props.cells[j % K
-          // block row offset = row * size * size
-          + Math.floor(i / K) * N * K
-          // block column offset = col * blockSize
-          + (i % K) * K
-          // cell row offset = cellrow * size
-          + Math.floor(j / K) * N]
-      }))
-    })
-
-    function isFilled (group: number[]) {
-      return group.every(x => x)
-    }
-    function hasError (group: number[]) {
-      return group.some((x, i, arr) => x && (arr.indexOf(x) !== i))
-    }
-
-    type ValidationResult = 'error' | 'correct' | 'incomplete'
-    function getState (group: number[]) : ValidationResult {
-      return hasError(group) 
-        ? 'error'
-        : isFilled(group)
-          ? 'correct'
-          : 'incomplete'
-    }
-
-    const rowValidationStates = computed(() => rows.value.map(getState))
-    const columnValidationStates = computed(() => columns.value.map(getState))
-    const blockValidationStates = computed(() => blocks.value.map(getState))
-
-    const puzzleValidationState = computed(() => {
-      const concatenated = [...rowValidationStates.value, ...columnValidationStates.value, ...blockValidationStates.value]
-
-      return concatenated.some(x => x === 'error')
-        ? 'error'
-        : concatenated.every(x => x === 'correct')
-          ? 'correct'
-          : 'incomplete'
-    })
-
-    const validation = computed(() => ({
-      rows: rowValidationStates.value,
-      columns: columnValidationStates.value,
-      blocks: blockValidationStates.value
-    }))
-
-    watch(() => puzzleValidationState.value, state => {
+    watch(() => validation.value.puzzle, state => {
       if (state === 'correct') {
         emit('gameover')
       }
@@ -152,32 +96,10 @@ export default defineComponent({
       emit('back')
     }
 
-    const placement = {
-      cell: (index : number) => ({
-        gridRow: `${Math.floor(index / props.size) + 1} / span 1`,
-        gridColumn: `${index % props.size + 1} / span 1`
-      }),
-      row: (index : number) => ({
-        gridRow: `${index + 1} / span 1`,
-        gridColumn: `1 / ${props.size + 1}`
-      }),
-      column: (index : number) => ({
-        gridRow: `1 / ${props.size + 1}`,
-        gridColumn: `${index + 1} / span 1`
-      }),
-      block: (index : number) => ({
-        gridRow: `${1 + Math.floor(index / blockSize.value) * blockSize.value} / span ${blockSize.value}`,
-        gridColumn: `${1 + (index % blockSize.value) * blockSize.value} / span ${blockSize.value}`
-      })
-    }
-
     return {
       color,
-      rows,
-      columns,
-      blocks,
-      validation,
       placement,
+      validation,
       onCellClick,
       onBackClick
     }
