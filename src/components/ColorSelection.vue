@@ -4,41 +4,44 @@
     :style="{ gridTemplate }"
   >
     <div
-      v-for="(color, i) in colors" :key="color"
+      v-for="(color, i) in relevantColors" :key="color"
       :class="{[$style.color]: true, [$style.active]: modelValue === (i + 1)}"
-      :style="{ backgroundColor: colors[i] }"
+      :style="{ backgroundColor: relevantColors[i] }"
       @click="onClick(i + 1)"
     />
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script lang="ts">
+import { defineComponent, computed } from 'vue'
 
 import colors from '../colors'
 
 export default defineComponent({
   props: {
     modelValue: {
-      validator: x => typeof x === 'number' || x === null,
-      default: null
+      type: Number,
+      required: true
     },
     size: {
       type: Number,
       required: true
     }
   },
-  computed: {
-    gridTemplate () {
-      return `auto / repeat(${this.size}, 1fr)`
-    },
-    colors () {
-      return colors.slice(1, this.size + 1)
+  emits: ['update:modelValue'],
+  setup (props, { emit }) {
+    const relevantColors = computed(() => colors.slice(1, props.size + 1))
+
+    const gridTemplate = computed(() => `auto / repeat(${props.size}, 1fr)`)
+
+    function onClick (color: number) {
+      emit('update:modelValue', color)
     }
-  },
-  methods: {
-    onClick (color) {
-      this.$emit('update:modelValue', color)
+
+    return {
+      relevantColors,
+      gridTemplate,
+      onClick
     }
   }
 })

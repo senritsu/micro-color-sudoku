@@ -3,7 +3,7 @@
   <h1 :class="$style.crown">👑</h1>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue'
 
 import Button from './Button.vue'
