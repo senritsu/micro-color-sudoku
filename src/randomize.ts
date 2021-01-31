@@ -1,4 +1,4 @@
-import { rotateLeft } from './math'
+import { rotateLeft, mirrorHorizontally, mirrorVertically } from './math'
 
 export default function (puzzle : number[]) {
   const numbers = Array.from({length: Math.sqrt(puzzle.length)}).map((_, i) => i + 1)
@@ -7,7 +7,13 @@ export default function (puzzle : number[]) {
     return map
   }, {} as { [key: number]: number })
 
-  const randomized = puzzle.map(n => mapping[n] || 0)
+  let randomized = puzzle.map(n => mapping[n] || 0)
+
+  for (const modify of [mirrorHorizontally, mirrorVertically]) {
+    if (Math.random() < 0.25) {
+      randomized = modify(randomized)
+    }
+  }
 
   const steps = Math.floor(Math.random() * 4)
   return rotateLeft(randomized, steps)
