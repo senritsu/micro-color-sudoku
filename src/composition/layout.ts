@@ -12,7 +12,7 @@ interface GridPosition {
 }
 
 interface GridPositionFunction {
-  (i: number): GridPosition
+  (rowMajorIndex: number): GridPosition
 }
 
 interface GridPlacement {
@@ -27,9 +27,32 @@ interface GridLayout {
   placement: Ref<GridPlacement>
 }
 
+export function squarePlacement (gridSize: number) : GridPlacement {
+  const N = gridSize
+  const K = Math.sqrt(N)
+
+  return {
+    cell: (index : number) => ({
+      gridRow: `${Math.floor(index / N) + 1} / span 1`,
+      gridColumn: `${index % N + 1} / span 1`
+    }),
+    row: (index : number) => ({
+      gridRow: `${index + 1} / span 1`,
+      gridColumn: `1 / span ${N}`
+    }),
+    column: (index : number) => ({
+      gridRow: `1 / span ${N}`,
+      gridColumn: `${index + 1} / span 1`
+    }),
+    block: (index : number) => ({
+      gridRow: `${1 + Math.floor(index / K) * K} / span ${K}`,
+      gridColumn: `${1 + (index % K) * K} / span ${K}`
+    })
+  }
+}
+
 export function useSquareLayout (cells: Ref<number[]>) : GridLayout {
   const N = computed(() => Math.sqrt(cells.value.length))
-  const K = computed(() => Math.sqrt(N.value))
 
   function forSize<T>(f: (index: number) => T) {
     return Array.from({ length: N.value }).map((_, i) => f(i))
@@ -44,7 +67,7 @@ export function useSquareLayout (cells: Ref<number[]>) : GridLayout {
   })
   const blocks = computed(() => {
     const n = N.value
-    const k = K.value
+    const k = Math.sqrt(n)
     
     return forSize(i => forSize(j => {
       return cells.value[j % k
@@ -63,29 +86,7 @@ export function useSquareLayout (cells: Ref<number[]>) : GridLayout {
     blocks
   } as Groups))
 
-  const placement = computed(() => {
-    const n = N.value
-    const k = K.value
-    
-    return {
-      cell: (index : number) => ({
-        gridRow: `${Math.floor(index / n) + 1} / span 1`,
-        gridColumn: `${index % n + 1} / span 1`
-      }),
-      row: (index : number) => ({
-        gridRow: `${index + 1} / span 1`,
-        gridColumn: `1 / ${n + 1}`
-      }),
-      column: (index : number) => ({
-        gridRow: `1 / ${n + 1}`,
-        gridColumn: `${index + 1} / span 1`
-      }),
-      block: (index : number) => ({
-        gridRow: `${1 + Math.floor(index / k) * k} / span ${k}`,
-        gridColumn: `${1 + (index % k) * k} / span ${k}`
-      })
-    }
-  })
+  const placement = computed(() => squarePlacement(N.value))
 
   return {
     groups,
